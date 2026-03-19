@@ -115,7 +115,7 @@ export function useAILenny(canvasRef: RefObject<HTMLCanvasElement>) {
       if (data.error) throw new Error(data.error);
 
       const { text, audio } = data as { text: string; audio: string };
-
+      if (!audio) throw new Error('No audio data returned from API');
       conversationHistoryRef.current = [
         ...conversationHistoryRef.current,
         { role: 'user', content: transcript },
