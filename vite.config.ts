@@ -10,6 +10,8 @@ export default defineConfig({
   server: {
     headers: {
       'Permissions-Policy': 'microphone=*',
+      'X-Frame-Options': 'ALLOWALL',
+      'Content-Security-Policy': "frame-ancestors *",
     },
   },
 });

@@ -218,10 +218,16 @@ export function useLennyBot(canvasRef: RefObject<HTMLCanvasElement>) {
       animFrameRef.current = requestAnimationFrame(vadLoop);
     } catch (err: unknown) {
       const error = err as DOMException;
-      const msg =
-        error.name === 'NotAllowedError'
-          ? 'Microphone access denied. Please allow microphone access and try again.'
-          : `Could not access microphone: ${error.message}`;
+      let msg: string;
+      if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
+        let isInIframe = false;
+        try { isInIframe = window.self !== window.top; } catch { isInIframe = true; }
+        msg = isInIframe
+          ? 'Microphone blocked by iframe permissions. The page embedding this app must add allow="microphone" to its <iframe> tag.'
+          : 'Microphone access denied. Please allow microphone access in your browser and try again.';
+      } else {
+        msg = `Could not access microphone: ${error.message}`;
+      }
       setStatusText(msg);
       setErrorMessage(msg);
     }
